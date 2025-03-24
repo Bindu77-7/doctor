@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Booking</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        select, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #0d40c1;
+            color: white;
+            cursor: pointer;
+            border: none;
+        }
+        .doctor-card {
+            padding: 10px;
+            border: 1px solid #ddd;
+            margin: 10px 0;
+            border-radius: 5px;
+            background: hsla(0, 0%, 100%, 0.936);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .doctor-card img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid #ccc;
+        }
+        .doctor-info {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Find a Doctor</h2>
+        <label for="specialty">Select Specialization:</label>
+        <select id="specialty">
+            <option value="">--Select Specialization--</option>
+            <option value="Cardiologist">Cardiologist</option>
+            <option value="Dermatologist">Dermatologist</option>
+            <option value="General Physician">General Physician</option>
+            <option value="ENT Specialist">ENT Specialist</option>
+            <option value="Neurologist">Neurologist</option>
+            <option value="Gynecologist">Gynecologist</option>
+            <option value="Hepatologist">Hepatologist</option>
+            <option value="Orthopedic">Orthopedic</option>
+            <option value="Psychiatrist">Psychiatrist</option>
+            <option value="Dentist">Dentist</option>
+        </select>
+        
+        <label for="location">Select Location:</label>
+        <select id="location">
+            <option value="">--Select Location--</option>
+            <option value="Bhimavaram">Bhimavaram</option>
+            <option value="Guntur">Guntur</option>
+            <option value="Ongole">Ongole</option>
+            <option value="Rajamundry">Rajamundry</option>
+            <option value="Hyderabad">Hyderabad</option>
+            <option value="Vijayawada">Vijayawada</option>
+        </select>
+        
+        <button onclick="searchDoctors()">Search</button>
+        <div id="doctor-list"></div>
+    </div>
+
+    <script>
+        const doctors = [
+            { id: 1, name: "Dr. D Mehta", specialty: "Neurologist", location: "Guntur", hospital: "KII",address:"", image: "images/Female.jpg",mobile_no: "9952347845" },
+            { id: 2, name: "Dr. K Keerthana", specialty: "Neurologist", location: "Hyderabad", hospital: "KII",address:"", image: "images/Female.jpg",mobile_no: "8979874563" },
+            { id: 3, name: "Dr. N Nagendra", specialty: "Neurologist", location: "Ongole", hospital: "KII",address:"", image: "images/Male.jpg",mobile_no: "9956745673" },
+            { id: 4, name: "Dr. M Laxmi", specialty: "Neurologist", location: "Rajamundry", hospital: "KII",address:"", image: "images/Female.jpg",mobile_no: "8867589934" },
+            { id: 5, name: "Dr. D Mounika", specialty: "Neurologist", location: "Bhimavaram", hospital: "KII",address:"", image: "images/Female.jpg",mobile_no: "6301225456" },
+            { id: 6, name: "Dr. A Kumar", specialty: "Cardiologist", location: "Rajamundry", hospital: "KPP",address:"",image: "images/Male.jpg",mobile_no: "9954678903" },
+            { id: 7, name: "Dr. L Manikanta", specialty: "Cardiologist", location: "Ongole", hospital: "KPP",address:"",image: "images/Male.jpg",mobile_no: "8331956458" },
+            { id: 8, name: "Dr. M Kalpana", specialty: "Cardiologist", location: "Hyderabad", hospital: "KPP",address:"",image: "images/Female.jpg",mobile_no: "8331956459" },
+            { id: 9, name: "Dr. A Arjun", specialty: "Cardiologist", location: "Guntur", hospital: "KPP",address:"",image: "images/Male.jpg",mobile_no: "8331956473" },
+            { id: 10, name: "Dr. V Vamshi", specialty: "Cardiologist", location: "Bhimavaram", hospital: "KPP",address:"",image: "images/Male.jpg",mobile_no: "8335687987" },
+            { id: 11, name: "Dr. B Sharma", specialty: "Dermatologist", location: "Rajamundry", hospital: "KNN",address:"", image: "images/Male.jpg",mobile_no: "6301225678" },
+            { id: 12, name: "Dr. N Niharika", specialty: "Dermatologist", location: "Bhimavaram", hospital: "KNN",address:"", image: "images/Female.jpg",mobile_no: "6301225678" },
+            { id: 13, name: "Dr. L Vijaya", specialty: "Dermatologist", location: "Ongole", hospital: "KNN",address:"", image: "images/Female.jpg",mobile_no: "6301276878" },
+            { id: 14, name: "Dr. K Kalyani", specialty: "Dermatologist", location: "Hyderabad", hospital: "KNN",address:"", image: "images/Female.jpg",mobile_no: "6301225678" },
+            { id: 15, name: "Dr. N Naresh", specialty: "Dermatologist", location: "Guntur", hospital: "KNN",address:"", image: "images/Male.jpg",mobile_no: "6301226778" },
+            { id: 16, name: "Dr. C Charan", specialty: "General Physician", location: "Ongole", hospital: "KLL",address:"", image: "images/Male.jpg",mobile_no: "6400560034" },
+            { id: 17, name: "Dr. C Venkat", specialty: "General Physician", location: "Rajamundry", hospital: "KLL",address:"", image: "images/Male.jpg",mobile_no: "6445676786" },
+            { id: 18, name: "Dr. E Srikanth", specialty: "General Physician", location: "Bhimavaram", hospital: "KLL",address:"", image: "images/Male.jpg",mobile_no: "6300600456" },
+            { id: 19, name: "Dr. S Suresh", specialty: "General Physician", location: "Hyderabad", hospital: "KLL",address:"", image: "images/Male.jpg",mobile_no: "6300400678" },
+            { id: 20, name: "Dr. N Karthik", specialty: "General Physician", location: "Guntur", hospital: "KLL",address:"", image: "images/Male.jpg",mobile_no: "6300500067" },
+            { id: 21, name: "Dr. N Tarak", specialty: "Gynecologist", location: "Hyderabad", hospital: "KJJ",address:"", image: "images/Male.jpg" ,mobile_no: "9952567898"},
+            { id: 22, name: "Dr. B Meghana", specialty: "Gynecologist", location: "Guntur", hospital: "KJJ",address:"", image: "images/Female.jpg" ,mobile_no: "7857867890"},
+            { id: 23, name: "Dr. K Bujjibabu", specialty: "Gynecologist", location: "Bhimavaram", hospital: "KJJ",address:"", image: "images/Male.jpg" ,mobile_no: "8456734568"},
+            { id: 24, name: "Dr. T Trinadh", specialty: "Gynecologist", location: "Rajamundry", hospital: "KJJ",address:"", image: "images/Male.jpg" ,mobile_no: "9987654378"},
+            { id: 25, name: "Dr. U Bhargav", specialty: "Gynecologist", location: "Ongole", hospital: "KJJ",address:"", image: "images/Male.jpg" ,mobile_no: "8679874564"},
+            { id: 26, name: "Dr. K Pavan Kimar Inumala", specialty: "Dentist", location: "Bhimavaram",address: " 27-1-1, 1st Floor, Bhimavaram, J P Road, Landmark: Opposite Malabar Gold, West Godavari", hospital: "Partha Dental Clinic", image: "images/Male.jpg" ,mobile_no: "8679874574"},
+            { id: 27, name: "Dr. Srinivas Raju Pathapati", specialty: "Dentist", location: "Bhimavaram",address: " 27-1-7/1, Srirampuram, J.P. Road.Landmark: Near Coffee Day Bhimavaram, West Godavari", hospital: "Smile Dental Hospitals and Facial Surgeries", image: "images/Male.jpg" ,mobile_no: "8679974564"},
+            { id: 28, name: "Dr. Madhuri Vegesna", specialty: "Dentist", location:"Bhimavaram", address: " West Godavari Kasi Eye Hospital Street, Landmark: Opposite Muncipal Water Tank, West Godavari", hospital: "KIDZ DENTALMulti-speciality Clinic", image: "images/Female.jpg" ,mobile_no: "8679974564"},
+            { id: 29, name: "Dr. B.S.G Bhavani", specialty: "Gynecologist", location : "Bhimavaram",address: " D.No: 51-8-2,23rd ward, Rama Rao Peta,Palakol, West Godavari", hospital: "Krishnabhavani Hospital", image: "images/Female.jpg" ,mobile_no: "8679834564"},
+            { id: 30, name: "Dr. Surapu Ramadevi", specialty: "Gynecologist", location : "Bhimavaram",address: " Door Number 3-2-6/1D, Kothi Bomm Center Road, Subbarao Peta, Landmark: Near Prasad Hospital,Tadepalligudem, West Godavari", hospital: "Sree Krishnaveni Nursing Home", image: "images/Female.jpg" ,mobile_no: "8870974564"},
+            { id: 31, name: " Dr. Padmaja", specialty: "Gynecologist", location : "Vijayawada",address: " 32-2-9, Ratnamamba Street, Christurajupuram,Mogalrajapuram, Vijayawada ",hospital:"Medcy IVF hospital",image: "images/Female.jpg" ,mobile_no: "8679874564"},
+            { id: 32, name: "Dr. Pallavi Atluri", specialty: "Gynecologist", location : "Vijayawada",address: " 48-10, 12/2A, Service Road, Nagarjuna Nagar,, Landmark: beside Aahaar Food Court,, Vijayawada. ",hospital:"Rainbow Children's Hospital",image: "images/Male.jpg" ,mobile_no: "8679874564"},
+            { id: 33, name: "Dr. Lakshmi Prasuna ", specialty: "Gynecologist", location : "Vijayawada",address: "12-570,, Landmark: near, Kanakadurga Varadhi, Vijayawada. ",hospital:"Manipal Hospital",image: "images/Female.jpg" ,mobile_no: "8679874564"},
+            { id: 34, name: "Dr. Mohammad Avdel Samad  ", specialty: "ENT Specialist", location : "Vijayawada",address: " 40-9-1-31, 1st Floor, Vasavya Nagar, Benz Circle, Landmark: Near Ring Road., Vijayawad. ",hospital:"Al Shifa ENT Clinic",image: "images/Male.jpg" ,mobile_no: "8679864564"},
+            { id: 25, name: "View Profile Dr. Bayya Srinivasa Rao", specialty: "ENT Specialist", location : "Vijayawada",address: "28-26-2, Kurmaiah Street, Arundelpet, Landmark: Near Vijaya Talkies Centre., Vijayawada",hospital:"Srawya ENT & Implant Hospital",image: "images/Male.jpg" ,mobile_no: "8679874564"},
+
+        
+        
+        
+        ];
+
+        function searchDoctors() {
+            const specialty = document.getElementById("specialty").value;
+            const location = document.getElementById("location").value;
+            
+            const filtered = doctors.filter(doctor =>
+                (specialty === "" || doctor.specialty === specialty) &&
+                (location === "" || doctor.location === location)
+            );
+            displayDoctors(filtered);
+        }
+        function displayDoctors(list) {
+            const doctorList = document.getElementById("doctor-list");
+            doctorList.innerHTML = "";
+            if (list.length === 0) {
+                doctorList.innerHTML = "<p>No doctors found matching your criteria.</p>";
+                return;
+            }
+
+    list.forEach(doctor => {
+        // Create the doctor card div
+        const card = document.createElement("div");
+        card.classList.add("doctor-card");
+
+        // Create the image element
+        const img = document.createElement("img");
+        img.src = doctor.image;
+        img.alt = doctor.name;
+        img.onerror = function() {
+            this.onerror = null; // Prevent infinite loop
+            this.src = "images/default.jpg"; // Fallback image
+        };
+
+        // Create the doctor info div
+        const infoDiv = document.createElement("div");
+        infoDiv.classList.add("doctor-info");
+        infoDiv.innerHTML = `
+            <h3>${doctor.name}</h3>
+            <p><strong>Specialty:</strong> ${doctor.specialty}</p>
+            <p><strong>Location:</strong> ${doctor.location}</p>
+            <p><strong>Hospital:</strong> ${doctor.hospital}</p>
+            <p><strong>Address:</strong> ${doctor.address}</p>
+            <p><strong>Contact Number:</strong> ${doctor.mobile_no}</p>
+        `;
+
+        // Append elements to the card
+        card.appendChild(img);
+        card.appendChild(infoDiv);
+
+        // Append the card to the list
+        doctorList.appendChild(card);
+    });
+}
+
+
+        
+    </script>
+</body>
+</html>
